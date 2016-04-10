@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>fr.xebia</groupId>
+    <artifactId>clickCount-delivery</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <packaging>war</packaging>
+
+    <repositories>
+      <repository>
+        <id>nexus</id>
+        <url>https://ec2-52-29-80-74.eu-central-1.compute.amazonaws.com/nexus/content/groups/public/</url>
+      </repository>
+   </repositories>
+
+   <properties>
+     <artifactId>clickCount</artifactId>
+   </properties>
+   <dependencies>
+     <dependency>
+        <groupId>fr.xebia</groupId>
+        <artifactId>${artifactId}</artifactId>
+        <version>${target.version}</version>
+        <type>war</type>
+     </dependency>
+   </dependencies>
+
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>2.10</version>
+          <executions>
+            <execution>
+              <id>get_package</id>
+              <phase>package</phase>
+              <goals>
+                <goal>copy-dependencies</goal>
+              </goals>
+              <configuration>
+                <outputDirectory>${project.build.directory}</outputDirectory>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.tomcat.maven</groupId>
+          <artifactId>tomcat7-maven-plugin</artifactId>
+          <version>2.2</version>
+          <configuration>
+            <url>http://${tomcat.target.url}/manager/text</url>
+            <server>${tomcat.target.name}</server>
+            <path>/clickCount</path>
+            <update>false</update>
+            <warFile>${project.build.directory}/${artifactId}-${target.version}.war</warFile>
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
+</project>
