@@ -7,22 +7,28 @@
     <artifactId>clickCount-delivery</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <packaging>war</packaging>
+    <packaging>pom</packaging>
 
     <repositories>
       <repository>
         <id>nexus</id>
         <url>https://ec2-52-29-80-74.eu-central-1.compute.amazonaws.com/nexus/content/groups/public/</url>
+        <snapshots>
+            <updatePolicy>always</updatePolicy>
+        </snapshots>
+        <releases>
+            <updatePolicy>always</updatePolicy>
+        </releases>
       </repository>
    </repositories>
 
    <properties>
-     <artifactId>clickCount</artifactId>
+     <target.artifactId>clickCount</target.artifactId>
    </properties>
    <dependencies>
      <dependency>
         <groupId>fr.xebia</groupId>
-        <artifactId>${artifactId}</artifactId>
+        <artifactId>${target.artifactId}</artifactId>
         <version>${target.version}</version>
         <type>war</type>
      </dependency>
@@ -43,6 +49,7 @@
               </goals>
               <configuration>
                 <outputDirectory>${project.build.directory}</outputDirectory>
+                <stripVersion>true</stripVersion>
               </configuration>
             </execution>
           </executions>
@@ -51,13 +58,14 @@
           <groupId>org.apache.tomcat.maven</groupId>
           <artifactId>tomcat7-maven-plugin</artifactId>
           <version>2.2</version>
-          <configuration>
-            <url>http://${tomcat.target.url}/manager/text</url>
-            <server>${tomcat.target.name}</server>
-            <path>/clickCount</path>
-            <update>false</update>
-            <warFile>${project.build.directory}/${artifactId}-${target.version}.war</warFile>
-          </configuration>
+            <configuration>
+              <url>http://${tomcat.target.url}/manager/text</url>
+              <server>${tomcat.target.name}</server>
+              <path>/clickCount</path>
+              <update>false</update>
+              <ignorePackaging>true</ignorePackaging>
+              <warFile>${project.build.directory}/${target.artifactId}.war</warFile>
+            </configuration>
         </plugin>
       </plugins>
     </build>
